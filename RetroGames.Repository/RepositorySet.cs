@@ -1,10 +1,16 @@
 namespace RetroGames.Repository;
 
-public class RepositorySet(RepositoryConfig config) : IRepositorySet
+// Recebe os cinco repositórios pela injeção de dependência.
+public class RepositorySet(
+    IPlataformaRepository plataforma,
+    IJogoRepository jogo,
+    IJogoGeneroRepository jogoGenero,
+    IGeneroRepository genero,
+    ICondicaoJogoRepository condicaoJogo) : IRepositorySet
 {
-    public IPlataformaRepository Plataforma { get; } = new PlataformaRepository(config);
-    public IJogoRepository Jogo { get; } = new JogoRepository(config);
-    public IJogoGeneroRepository JogoGenero { get; } = new JogoGeneroRepository(config);
-    public IGeneroRepository Genero { get; } = new GeneroRepository(config);
-    public ICondicaoJogoRepository CondicaoJogo { get; } = new CondicaoJogoRepository(config);
+    public IPlataformaRepository Plataforma { get; } = plataforma;
+    public IJogoRepository Jogo { get; } = jogo;
+    public IJogoGeneroRepository JogoGenero { get; } = jogoGenero;
+    public IGeneroRepository Genero { get; } = genero;
+    public ICondicaoJogoRepository CondicaoJogo { get; } = condicaoJogo;
 }
