@@ -1,4 +1,5 @@
 using RetroGames.WebApi.Configuration;
+using RetroGames.WebApi.Middlewares;
 
 // Carrega o .env (procura a partir da pasta atual, subindo até achar).
 // Precisa vir antes do builder, para as variáveis entrarem na configuração.
@@ -17,10 +18,15 @@ if (string.IsNullOrWhiteSpace(connectionString))
 
 builder.Services.AddRepositorios(connectionString);
 builder.Services.AddServicosDeNegocio();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Primeira etapa do pipeline: captura exceções de tudo o que vem depois.
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
