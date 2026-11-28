@@ -1,9 +1,20 @@
-function App() {
+import { Route, Routes } from 'react-router-dom'
+import Layout from './components/Layout'
+import Catalogo from './pages/Catalogo/Catalogo'
+import DetalheJogo from './pages/Catalogo/DetalheJogo'
+import NaoEncontrada from './pages/NaoEncontrada'
+
+export default function App() {
   return (
-    <div className="container py-4">
-      <h1>RetroGames</h1>
-    </div>
+    <Routes>
+      {/* Todas as páginas aparecem dentro do Layout, no lugar do <Outlet />. */}
+      <Route element={<Layout />}>
+        {/* Rotas públicas */}
+        <Route path="/" element={<Catalogo />} />
+        <Route path="/jogos/:id" element={<DetalheJogo />} />
+        {/* Qualquer outro endereço */}
+        <Route path="*" element={<NaoEncontrada />} />
+      </Route>
+    </Routes>
   )
 }
-
-export default App
