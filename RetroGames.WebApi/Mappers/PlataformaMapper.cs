@@ -12,4 +12,21 @@ public static class PlataformaMapper
         Fabricante = plataforma.Fabricante,
         AnoLancamento = plataforma.AnoLancamento,
     };
+
+    // Entrada → modelo. Na inclusão não há id: quem gera é o banco.
+    public static Plataforma ParaModel(this InserirPlataformaRequestApiModel request) => new()
+    {
+        Nome = request.Nome,
+        Fabricante = request.Fabricante,
+        AnoLancamento = request.AnoLancamento,
+    };
+
+    // Na alteração, o id vem da rota, nunca do corpo.
+    public static Plataforma ParaModel(this AlterarPlataformaRequestApiModel request, int id) => new()
+    {
+        Id = id,
+        Nome = request.Nome,
+        Fabricante = request.Fabricante,
+        AnoLancamento = request.AnoLancamento,
+    };
 }
