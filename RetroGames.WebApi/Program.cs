@@ -1,4 +1,6 @@
+using FluentValidation;
 using RetroGames.WebApi.Configuration;
+using RetroGames.WebApi.Filters;
 using RetroGames.WebApi.Middlewares;
 
 // Carrega o .env (procura a partir da pasta atual, subindo até achar).
@@ -20,7 +22,24 @@ builder.Services.AddRepositorios(connectionString);
 builder.Services.AddServicosDeNegocio();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
-builder.Services.AddControllers();
+
+// Registra todos os validators deste projeto.
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+builder.Services
+    .AddControllers(opcoes => opcoes.Filters.Add<FluentValidationFilter>())
+    .ConfigureApiBehaviorOptions(opcoes =>
+    {
+        // JSON malformado ou tipo errado: o [ApiController] recusa antes da action.
+        // Aqui trocamos a resposta padrão dele pelo nosso envelope, com código 3.
+        opcoes.InvalidModelStateResponseFactory = contexto =>
+            FluentValidationFilter.RespostaInvalida(contexto.ModelState
+                .Where(e => e.Value?.Errors.Count > 0)
+                .ToDictionary(
+                    e => e.Key,
+                    e => e.Value!.Errors.Select(erro => erro.ErrorMessage).ToArray()));
+    });
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
