@@ -34,6 +34,10 @@ builder.Services.AddServicosDeNegocio();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
+// Sessão por cookie (retrogames.sessao). As políticas entram na Etapa 3.
+builder.Services.AddAutenticacaoPorCookie();
+builder.Services.AddAuthorization();
+
 // Registra todos os validators deste projeto.
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
@@ -71,6 +75,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();   // descrição da API em /openapi/v1.json
     app.UseSwaggerUI(opcoes => opcoes.SwaggerEndpoint("/openapi/v1.json", "RetroGames API"));
 }
+
+// Primeiro descobre QUEM é o usuário (cookie), depois decide O QUE ele pode fazer.
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
