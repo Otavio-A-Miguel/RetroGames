@@ -1,4 +1,5 @@
 using RetroGames.Model.Consultas;
+using RetroGames.Model.Model;
 using RetroGames.Services;
 using RetroGames.WebApi.ApiModels;
 
@@ -13,6 +14,32 @@ public static class JogoMapper
         IdPlataforma = request.IdPlataforma,
         Pagina = request.Pagina,
         TamanhoPagina = request.TamanhoPagina,
+    };
+
+    // Entrada → modelo. Ativo, Cadastro e Id são definidos pelo Service e pelo banco.
+    public static Jogo ParaModel(this InserirJogoRequestApiModel request) => new()
+    {
+        Nome = request.Nome,
+        Descricao = request.Descricao,
+        AnoLancamento = request.AnoLancamento,
+        Preco = request.Preco,
+        Estoque = request.Estoque,
+        IdPlataforma = request.IdPlataforma,
+        IdCondicaoJogo = request.IdCondicaoJogo,
+    };
+
+    // Na alteração, o id vem da rota, nunca do corpo.
+    public static Jogo ParaModel(this AlterarJogoRequestApiModel request, int id) => new()
+    {
+        Id = id,
+        Nome = request.Nome,
+        Descricao = request.Descricao,
+        AnoLancamento = request.AnoLancamento,
+        Preco = request.Preco,
+        Estoque = request.Estoque,
+        Ativo = request.Ativo,
+        IdPlataforma = request.IdPlataforma,
+        IdCondicaoJogo = request.IdCondicaoJogo,
     };
 
     public static ListarJogoResponseApiModel ParaListarResponse(this JogoDetalheServiceModel detalhe) => new()
