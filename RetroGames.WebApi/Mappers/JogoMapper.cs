@@ -14,6 +14,7 @@ public static class JogoMapper
         IdPlataforma = request.IdPlataforma,
         Pagina = request.Pagina,
         TamanhoPagina = request.TamanhoPagina,
+        IncluirInativos = request.IncluirInativos,
     };
 
     // Entrada → modelo. Ativo, Cadastro e Id são definidos pelo Service e pelo banco.

@@ -3,6 +3,7 @@ using RetroGames.Services;
 using RetroGames.WebApi.Configuration;
 using RetroGames.WebApi.Filters;
 using RetroGames.WebApi.Middlewares;
+using RetroGames.WebApi.Services;
 
 // Carrega o .env (procura a partir da pasta atual, subindo até achar).
 // Precisa vir antes do builder, para as variáveis entrarem na configuração.
@@ -34,9 +35,13 @@ builder.Services.AddServicosDeNegocio();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-// Sessão por cookie (retrogames.sessao). As políticas entram na Etapa 3.
+// Sessão por cookie e políticas (padrão exige login; SomenteAdministrador).
 builder.Services.AddAutenticacaoPorCookie();
-builder.Services.AddAuthorization();
+builder.Services.AddAutorizacao();
+
+// Quem está chamando: o Service usa a interface, a WebApi lê o cookie.
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUsuarioAtualService, UsuarioAtualService>();
 
 // Registra todos os validators deste projeto.
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
@@ -72,7 +77,9 @@ app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();   // descrição da API em /openapi/v1.json
+    // Sem o AllowAnonymous, a política padrão bloquearia a descrição da API
+    // e o /swagger mostraria "Failed to load API definition".
+    app.MapOpenApi().AllowAnonymous();
     app.UseSwaggerUI(opcoes => opcoes.SwaggerEndpoint("/openapi/v1.json", "RetroGames API"));
 }
 

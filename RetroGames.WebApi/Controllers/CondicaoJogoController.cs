@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using RetroGames.WebApi.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Services;
 using RetroGames.WebApi.ApiModels;
@@ -10,6 +12,7 @@ namespace RetroGames.WebApi.Controllers;
 public class CondicaoJogoController(ICondicaoJogoService condicaoJogoService) : ControllerBase
 {
     // GET /api/CondicaoJogo
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<RetroGamesResponseApiModel<List<ListarCondicaoJogoResponseApiModel>>>> Listar()
     {

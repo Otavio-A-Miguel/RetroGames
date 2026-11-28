@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using RetroGames.WebApi.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Services;
 using RetroGames.WebApi.ApiModels;
@@ -10,6 +12,7 @@ namespace RetroGames.WebApi.Controllers;
 public class PlataformaController(IPlataformaService plataformaService) : ControllerBase
 {
     // GET /api/Plataforma
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<RetroGamesResponseApiModel<List<ListarPlataformaResponseApiModel>>>> Listar()
     {
@@ -20,6 +23,7 @@ public class PlataformaController(IPlataformaService plataformaService) : Contro
     }
 
     // GET /api/Plataforma/{id}
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>>> ListarPorId(int id)
     {
@@ -29,6 +33,7 @@ public class PlataformaController(IPlataformaService plataformaService) : Contro
     }
 
     // POST /api/Plataforma  (dados no corpo)
+    [Authorize(Policy = Politicas.Administrador)]
     [HttpPost]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>>> Inserir(
         InserirPlataformaRequestApiModel request)
@@ -41,6 +46,7 @@ public class PlataformaController(IPlataformaService plataformaService) : Contro
     }
 
     // PUT /api/Plataforma/{id}  (registro completo no corpo)
+    [Authorize(Policy = Politicas.Administrador)]
     [HttpPut("{id:int}")]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>>> Alterar(
         int id, AlterarPlataformaRequestApiModel request)
@@ -51,6 +57,7 @@ public class PlataformaController(IPlataformaService plataformaService) : Contro
     }
 
     // DELETE /api/Plataforma/{id}  (exclusão física; a API não usa 204)
+    [Authorize(Policy = Politicas.Administrador)]
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<RetroGamesResponseApiModel>> Excluir(int id)
     {

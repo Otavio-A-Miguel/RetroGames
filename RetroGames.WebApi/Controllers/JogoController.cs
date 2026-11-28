@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using RetroGames.WebApi.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Services;
 using RetroGames.WebApi.ApiModels;
@@ -10,6 +12,7 @@ namespace RetroGames.WebApi.Controllers;
 public class JogoController(IJogoService jogoService) : ControllerBase
 {
     // GET /api/Jogo?busca=...&idPlataforma=...&idGenero=...&pagina=...&tamanhoPagina=...
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<RetroGamesResponseApiModel<PaginaResponseApiModel<ListarJogoResponseApiModel>>>> Listar(
         [FromQuery] ListarJogoRequestApiModel request)
@@ -21,6 +24,7 @@ public class JogoController(IJogoService jogoService) : ControllerBase
     }
 
     // GET /api/Jogo/{id}
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>>> ListarPorId(int id)
     {
@@ -30,6 +34,7 @@ public class JogoController(IJogoService jogoService) : ControllerBase
     }
 
     // POST /api/Jogo  (jogo e gêneros gravados numa transação, no Service)
+    [Authorize(Policy = Politicas.Administrador)]
     [HttpPost]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>>> Inserir(
         InserirJogoRequestApiModel request)
@@ -41,6 +46,7 @@ public class JogoController(IJogoService jogoService) : ControllerBase
     }
 
     // PUT /api/Jogo/{id}  (jogo completo no corpo; "ativo": true reativa)
+    [Authorize(Policy = Politicas.Administrador)]
     [HttpPut("{id:int}")]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>>> Alterar(
         int id, AlterarJogoRequestApiModel request)
@@ -51,6 +57,7 @@ public class JogoController(IJogoService jogoService) : ControllerBase
     }
 
     // DELETE /api/Jogo/{id}  (exclusão lógica, RN03: o jogo só é desativado)
+    [Authorize(Policy = Politicas.Administrador)]
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<RetroGamesResponseApiModel>> Excluir(int id)
     {
